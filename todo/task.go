@@ -7,18 +7,18 @@ import (
 
 type Task struct {
 	ID     int
-	name   string
-	status bool
+	Name   string
+	Status bool
 }
 
-func cekFileTodo() {
+func CekFileTodo() {
 	var fileName string = "todo.csv"
 	_, err := os.Stat(fileName)
 
 	if os.IsNotExist(err) {
 		fmt.Printf("File %s tidak ditemukan. apakah kamu ingin membuat file baru? (y/n)", fileName)
 		var response string
-		fmt.Scanln(response)
+		fmt.Scanln(&response)
 
 		if response == "y" || response == "Y" {
 			file, err := os.Create(fileName)
