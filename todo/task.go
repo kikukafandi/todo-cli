@@ -62,7 +62,7 @@ func getLastId() int {
 	}
 	return lastId
 }
-func addTodo(name string) {
+func AddTodo(name string) {
 	file, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		fmt.Println("Gagal membuka file:", err)
