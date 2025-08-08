@@ -13,18 +13,18 @@ type Task struct {
 	Status bool
 }
 
-var fileName string = "todo.csv"
+var FileName string = "todo.csv"
 
 func CekFileTodo() {
-	_, err := os.Stat(fileName)
+	_, err := os.Stat(FileName)
 
 	if os.IsNotExist(err) {
-		fmt.Printf("File %s tidak ditemukan. apakah kamu ingin membuat file baru? (y/n)\n", fileName)
+		fmt.Printf("File %s tidak ditemukan. apakah kamu ingin membuat file baru? (y/n)\n", FileName)
 		var response string
 		fmt.Scanln(&response)
 
 		if response == "y" || response == "Y" {
-			file, err := os.Create(fileName)
+			file, err := os.Create(FileName)
 			if err != nil {
 				fmt.Println("Membuat file gagal:", err)
 				return
@@ -40,8 +40,8 @@ func CekFileTodo() {
 	}
 
 }
-func getLastId() int {
-	file, err := os.Open(fileName)
+func GetLastId() int {
+	file, err := os.Open(FileName)
 	if err != nil {
 		return 0
 	}
@@ -63,14 +63,14 @@ func getLastId() int {
 	return lastId
 }
 func AddTodo(name string) {
-	file, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(FileName, os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		fmt.Println("Gagal membuka file:", err)
 		return
 	}
 	defer file.Close()
 
-	id := getLastId() + 1
+	id := GetLastId() + 1
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
