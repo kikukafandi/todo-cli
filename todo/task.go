@@ -62,6 +62,29 @@ func getLastId() int {
 	}
 	return lastId
 }
-func addTodo() {
+func addTodo(name string) {
+	file, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		fmt.Println("Gagal membuka file:", err)
+		return
+	}
+	defer file.Close()
+
+	id := getLastId() + 1
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	task := []string{
+		strconv.Itoa(id),
+		name,
+		"false",
+	}
+
+	if err := writer.Write(task); err != nil {
+		return
+	}
+
+	fmt.Println("Task berhasil ditambahkan")
 
 }
