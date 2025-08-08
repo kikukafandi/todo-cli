@@ -1,8 +1,10 @@
 package todo
 
 import (
+	"encoding/csv"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type Task struct {
@@ -11,8 +13,9 @@ type Task struct {
 	Status bool
 }
 
+var fileName string = "todo.csv"
+
 func CekFileTodo() {
-	var fileName string = "todo.csv"
 	_, err := os.Stat(fileName)
 
 	if os.IsNotExist(err) {
@@ -37,7 +40,28 @@ func CekFileTodo() {
 	}
 
 }
+func getLastId() int {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return 0
+	}
+	defer file.Close()
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		return 0
+	}
+	if len(records) == 0 {
+		return 0
+	}
 
+	lastRecord := records[len(records)-1]
+	lastId, err := strconv.Atoi(lastRecord[0])
+	if err != nil {
+		return 0
+	}
+	return lastId
+}
 func addTodo() {
 
 }
