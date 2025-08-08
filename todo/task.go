@@ -19,7 +19,7 @@ func CekFileTodo() {
 	_, err := os.Stat(fileName)
 
 	if os.IsNotExist(err) {
-		fmt.Printf("File %s tidak ditemukan. apakah kamu ingin membuat file baru? (y/n)", fileName)
+		fmt.Printf("File %s tidak ditemukan. apakah kamu ingin membuat file baru? (y/n)\n", fileName)
 		var response string
 		fmt.Scanln(&response)
 
