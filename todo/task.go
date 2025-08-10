@@ -88,3 +88,28 @@ func AddTodo(name string) {
 	fmt.Println("Task berhasil ditambahkan")
 
 }
+
+func ShowTodo() {
+	file, err := os.Open(FileName)
+	if err != nil {
+		fmt.Println("Error membuka file:", err)
+		return
+	}
+	defer file.Close()
+	reader := csv.NewReader(file)
+	record, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error membaca csv")
+		return
+	}
+	if len(record) == 0 {
+		fmt.Println("Belum ada todo")
+	}
+	fmt.Println("\n==== Daftar Todo List ====")
+	for i, rec := range record {
+		if len(rec) > 2 {
+
+			fmt.Printf("%d. %s\n", i+1, rec[1])
+		}
+	}
+}
