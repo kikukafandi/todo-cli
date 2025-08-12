@@ -113,3 +113,46 @@ func ShowTodo() {
 		}
 	}
 }
+
+func UpdateTodo(id int, newName string, newStatus bool) error {
+	file, err := os.Open(FileName)
+	if err != nil {
+		return fmt.Errorf("gagal membuka file : %d", err)
+	}
+	defer file.Close()
+	reader := csv.NewReader(file)
+	record, err := reader.ReadAll()
+	if err != nil {
+		return fmt.Errorf("gagal membaca csv : %d", err)
+	}
+	updated := false
+
+	for i, rec := range record {
+		if len(rec) < 3 {
+			continue
+		}
+		recordId, err := strconv.Atoi(rec[0])
+		if err != nil {
+			continue
+		}
+		if recordId == id {
+			record[i][1] = newName
+			record[i][2] = strconv.FormatBool(newStatus)
+			updated = true
+			break
+		}
+	}
+
+	if !updated {
+		return fmt.Errorf("todo dengan ID %d tidak ditemukan", id)
+	}
+
+	fileWriter, err := os.Create(FileName)
+	writer := csv.NewWriter(fileWriter)
+	defer writer.Flush()
+	if err != nil {
+		return fmt.Errorf("gagal menulis data csv: %w", err)
+	}
+	defer fileWriter.Close()
+	return nil
+}
