@@ -156,3 +156,57 @@ func UpdateTodo(id int, newName string, newStatus bool) error {
 	defer fileWriter.Close()
 	return nil
 }
+
+func DeleteTodo(id int) {
+	file, err := os.Open(FileName)
+
+	if err != nil {
+		fmt.Println("Gagal Membuka File :", err)
+		return
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	record, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Gagal membuka csv :", err)
+		return
+	}
+
+	newRecord := [][]string{}
+	deleted := false
+
+	for _, rec := range record {
+		if len(rec) < 3 {
+			continue
+		}
+
+		recordId, _ := strconv.Atoi(rec[0])
+		if recordId == id {
+			deleted = true
+			continue
+		}
+
+		newRecord = append(newRecord, rec)
+
+	}
+
+	if !deleted {
+		fmt.Println("todo dengan id", id, "tidak ditemukan")
+		return
+	}
+
+	fileWriter, err := os.Create(FileName)
+	if err != nil {
+		fmt.Println("Gagal Menulis csv:", err)
+		return
+	}
+	defer fileWriter.Close()
+
+	writer := csv.NewWriter(fileWriter)
+	defer writer.Flush()
+
+	if err := writer.WriteAll(newRecord); err != nil {
+		fmt.Println("Gagal Menulis csv")
+	}
+}
