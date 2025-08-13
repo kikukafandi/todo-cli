@@ -104,6 +104,7 @@ func ShowTodo() {
 	}
 	if len(record) == 0 {
 		fmt.Println("Belum ada todo")
+		return
 	}
 	fmt.Println("\n==== Daftar Todo List ====")
 	for i, rec := range record {
@@ -117,13 +118,13 @@ func ShowTodo() {
 func UpdateTodo(id int, newName string, newStatus bool) error {
 	file, err := os.Open(FileName)
 	if err != nil {
-		return fmt.Errorf("gagal membuka file : %d", err)
+		return fmt.Errorf("gagal membuka file : %w", err)
 	}
 	defer file.Close()
 	reader := csv.NewReader(file)
 	record, err := reader.ReadAll()
 	if err != nil {
-		return fmt.Errorf("gagal membaca csv : %d", err)
+		return fmt.Errorf("gagal membaca csv : %w", err)
 	}
 	updated := false
 
@@ -148,12 +149,15 @@ func UpdateTodo(id int, newName string, newStatus bool) error {
 	}
 
 	fileWriter, err := os.Create(FileName)
-	writer := csv.NewWriter(fileWriter)
-	defer writer.Flush()
 	if err != nil {
 		return fmt.Errorf("gagal menulis data csv: %w", err)
 	}
 	defer fileWriter.Close()
+
+	writer := csv.NewWriter(fileWriter)
+	if err := writer.WriteAll(record); err != nil {
+		return fmt.Errorf("gagal manulis data csv: %w", err)
+	}
 	return nil
 }
 
